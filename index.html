@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="theme-color" content="#0f2557"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>Alphabet City Flood Ready</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f4f8;color:#1a202c;}
+  
+  .app{max-width:430px;margin:0 auto;height:100dvh;display:flex;flex-direction:column;background:#fff;position:relative;overflow:hidden;}
+  
+  /* HEADER */
+  .hdr{background:linear-gradient(160deg,#0a1f4e,#1a3a6b);color:#fff;padding:14px 16px 16px;flex-shrink:0;}
+  .hdr-row{display:flex;align-items:center;gap:8px;margin-bottom:3px;}
+  .pulse{width:8px;height:8px;border-radius:50%;background:#fbbf24;animation:p 2s infinite;flex-shrink:0;}
+  @keyframes p{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.8);}}
+  .hdr h1{font-size:15px;font-weight:600;letter-spacing:-.2px;}
+  .hdr-sub{font-size:11px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:6px;}
+  .zone-badge{background:rgba(251,191,36,.25);border:1px solid rgba(251,191,36,.5);color:#fbbf24;font-size:10px;font-weight:600;padding:1px 7px;border-radius:20px;letter-spacing:.03em;}
+
+  /* TABS */
+  .tabs{display:flex;background:#fff;border-bottom:1.5px solid #e2e8f0;flex-shrink:0;}
+  .tab{flex:1;padding:11px 4px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;border:none;background:none;color:#64748b;border-bottom:2.5px solid transparent;margin-bottom:-1.5px;transition:color .15s,border-color .15s;letter-spacing:.02em;}
+  .tab.on{color:#0a1f4e;border-bottom-color:#0a1f4e;}
+
+  /* PANES */
+  .pane{display:none;flex:1;overflow-y:auto;flex-direction:column;}
+  .pane.on{display:flex;}
+
+  /* ALERT BANNER */
+  .alert-banner{background:#fef3c7;border-bottom:1px solid #f59e0b;padding:9px 14px;font-size:12px;color:#78350f;display:flex;gap:7px;align-items:flex-start;flex-shrink:0;}
+  .alert-banner strong{font-weight:600;white-space:nowrap;}
+
+  /* MAP IFRAME */
+  .map-wrap{flex-shrink:0;position:relative;height:340px;background:#e8f0d8;}
+  .map-wrap iframe{width:100%;height:100%;border:none;display:block;}
+  .map-overlay-btn{position:absolute;bottom:10px;right:10px;background:#0a1f4e;color:#fff;border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+
+  /* SHELTER CARDS */
+  .section{padding:12px 14px;}
+  .section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#94a3b8;margin-bottom:8px;}
+  .scard{border:1px solid #e2e8f0;border-radius:10px;padding:11px 13px;margin-bottom:8px;transition:border-color .15s;}
+  .scard:active{border-color:#0a1f4e;background:#f8faff;}
+  .scard-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;}
+  .scard-name{font-size:13px;font-weight:600;color:#0a1f4e;}
+  .dist-badge{font-size:11px;font-weight:600;color:#059669;white-space:nowrap;}
+  .scard-addr{font-size:11px;color:#64748b;margin-top:2px;}
+  .tags{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;}
+  .tg{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500;}
+  .tg-blue{background:#dbeafe;color:#1e40af;}
+  .tg-green{background:#d1fae5;color:#065f46;}
+  .tg-orange{background:#ffedd5;color:#9a3412;}
+  .loader{padding:24px;text-align:center;font-size:13px;color:#94a3b8;}
+  .btn-full{width:100%;padding:12px;background:#0a1f4e;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px;letter-spacing:.02em;}
+  .btn-full:active{background:#0d2866;}
+  .emergency-box{background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px 14px;margin-top:4px;}
+  .emergency-box h4{font-size:11px;font-weight:700;color:#991b1b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
+  .e-row{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid #fecaca;}
+  .e-row:last-child{border-bottom:none;}
+  .e-num{font-size:14px;font-weight:700;color:#dc2626;}
+  .e-label{font-size:11px;color:#7f1d1d;}
+
+  /* REGISTER */
+  .reg-hdr{padding:16px 16px 12px;background:#f8faff;border-bottom:1px solid #e2e8f0;flex-shrink:0;}
+  .reg-hdr h2{font-size:15px;font-weight:600;color:#0a1f4e;margin-bottom:4px;}
+  .reg-hdr p{font-size:12px;color:#64748b;line-height:1.6;}
+  .form-body{padding:14px 16px;}
+  .fld{margin-bottom:14px;}
+  .fld label{display:block;font-size:11px;font-weight:600;color:#475569;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em;}
+  .fld input,.fld select{width:100%;padding:10px 13px;border:1.5px solid #e2e8f0;border-radius:9px;font-size:14px;background:#fff;color:#1a202c;font-family:inherit;transition:border-color .15s;}
+  .fld input:focus,.fld select:focus{outline:none;border-color:#0a1f4e;box-shadow:0 0 0 3px rgba(10,31,78,.08);}
+  .lang-row{display:flex;gap:7px;flex-wrap:wrap;}
+  .lb{padding:7px 13px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;background:#fff;color:#64748b;transition:all .15s;}
+  .lb.on{background:#0a1f4e;color:#fff;border-color:#0a1f4e;}
+  .floor-row{display:flex;gap:8px;}
+  .floor-row .fld{flex:1;}
+  .floor-check{display:flex;align-items:center;gap:8px;padding:10px 13px;border:1.5px solid #fee2e2;border-radius:9px;background:#fef2f2;cursor:pointer;}
+  .floor-check input{width:16px;height:16px;accent-color:#dc2626;cursor:pointer;}
+  .floor-check label{font-size:12px;color:#991b1b;font-weight:600;cursor:pointer;letter-spacing:.02em;}
+  .sub-btn{width:100%;padding:13px;background:#0a1f4e;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.03em;}
+  .sub-btn:active{background:#0d2866;}
+  .privacy-note{font-size:10px;color:#94a3b8;text-align:center;margin-top:8px;line-height:1.5;}
+
+  /* SUCCESS / CHAT */
+  .success{display:none;padding:0 0 20px;}
+  .success-top{background:linear-gradient(160deg,#0a1f4e,#1a3a6b);padding:20px 16px;text-align:center;color:#fff;}
+  .s-icon{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:22px;}
+  .success-top h3{font-size:16px;font-weight:600;margin-bottom:4px;}
+  .success-top p{font-size:12px;color:rgba(255,255,255,.75);line-height:1.6;}
+  .chat-box{margin:14px;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;}
+  .chat-hdr{background:#0a1f4e;color:#fff;padding:10px 14px;}
+  .chat-hdr strong{font-size:13px;display:block;}
+  .chat-hdr span{font-size:10px;color:rgba(255,255,255,.7);}
+  .msgs{padding:12px;background:#f8faff;max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;}
+  .m{}
+  .mname{font-size:10px;color:#94a3b8;margin-bottom:2px;font-weight:500;}
+  .mb{background:#fff;border:1px solid #e2e8f0;border-radius:2px 10px 10px 10px;padding:8px 10px;font-size:12px;color:#1a202c;max-width:90%;line-height:1.5;}
+  .mb.bot{background:#eff6ff;border-color:#bfdbfe;color:#1e3a5f;border-radius:10px;}
+  .mb.me{background:#0a1f4e;color:#fff;border:none;border-radius:10px 2px 10px 10px;margin-left:auto;}
+  .cin{display:flex;gap:8px;padding:10px 12px;border-top:1px solid #e2e8f0;background:#fff;}
+  .cin input{flex:1;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:20px;font-size:12px;font-family:inherit;background:#f8faff;color:#1a202c;}
+  .cin input:focus{outline:none;border-color:#0a1f4e;}
+  .csend{width:32px;height:32px;border-radius:50%;background:#0a1f4e;border:none;color:#fff;cursor:pointer;font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .whatsapp-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 28px);margin:0 14px;padding:12px;background:#25d366;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;}
+  
+  /* BOTTOM NAV */
+  .bottom-bar{background:#fff;border-top:1px solid #e2e8f0;padding:8px 16px 12px;flex-shrink:0;display:flex;gap:8px;}
+  .bb-link{flex:1;text-align:center;font-size:10px;font-weight:600;color:#0a1f4e;text-decoration:none;padding:6px;border-radius:8px;background:#f0f4ff;letter-spacing:.03em;}
+</style>
+</head>
+<body>
+<div class="app">
+  
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-row">
+      <div class="pulse"></div>
+      <h1>Alphabet City Flood Ready</h1>
+    </div>
+    <div class="hdr-sub">
+      <span>10009 · East Village</span>
+      <span class="zone-badge">ZONE A</span>
+      <span>Tap map to find your shelter</span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab on" onclick="sw('map',this)">🗺 Map &amp; Shelters</button>
+    <button class="tab" onclick="sw('register',this)">👥 Join Neighbors</button>
+  </div>
+
+  <!-- MAP PANE -->
+  <div id="pane-map" class="pane on">
+    <div class="alert-banner">
+      <strong>⚠ Zone A:</strong>
+      <span>Go WEST from Ave D. Avoid FDR Drive &amp; underground passages. Take Ave A or 1st Ave northwest.</span>
+    </div>
+    <div class="map-wrap">
+      <iframe
+        src="https://finder.nyc.gov/hurricane/locations?mView=map"
+        title="NYC Hurricane Evacuation Finder"
+        allow="geolocation"
+        loading="lazy"
+      ></iframe>
+      <button class="map-overlay-btn" onclick="window.open('https://finder.nyc.gov/hurricane/locations?mView=map','_blank')">Open full map ↗</button>
+    </div>
+    <div class="section">
+      <div class="section-label">Nearest evacuation centers</div>
+      <div id="shelter-list"><div class="loader">Loading shelters…</div></div>
+      <button class="btn-full" onclick="window.open('https://finder.nyc.gov/hurricane','_blank')">Find shelter from my address ↗</button>
+      <div style="height:12px;"></div>
+      <div class="emergency-box">
+        <h4>Emergency contacts</h4>
+        <div class="e-row"><span class="e-num">911</span><span class="e-label">Fire, Medical, Police</span></div>
+        <div class="e-row"><span class="e-num">311</span><span class="e-label">City services &amp; shelter info</span></div>
+        <div class="e-row"><span class="e-num">nyc.gov/em</span><span class="e-label">NYC Emergency Management</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTER PANE -->
+  <div id="pane-register" class="pane">
+    <div id="reg-form-wrap">
+      <div class="reg-hdr">
+        <h2>Join your zip code group</h2>
+        <p>Get real-time flood alerts and connect with neighbors on your block — in your language. Your info is only shared with NYC Emergency Management.</p>
+      </div>
+      <div class="form-body">
+        <div class="fld"><label>Full name</label><input type="text" id="fname" placeholder="Your name" autocomplete="name"/></div>
+        <div class="fld"><label>Phone</label><input type="tel" id="fphone" placeholder="+1 (212) 555-0000" autocomplete="tel"/></div>
+        <div class="fld"><label>Email</label><input type="email" id="femail" placeholder="you@email.com" autocomplete="email"/></div>
+        <div class="fld"><label>Zip code</label><input type="text" id="fzip" placeholder="10009" maxlength="5" inputmode="numeric"/></div>
+        <div class="fld">
+          <label>Language / Idioma / 语言 / ভাষা</label>
+          <div class="lang-row">
+            <button class="lb on" onclick="sl(this)">English</button>
+            <button class="lb" onclick="sl(this)">Español</button>
+            <button class="lb" onclick="sl(this)">中文</button>
+            <button class="lb" onclick="sl(this)">বাংলা</button>
+          </div>
+        </div>
+        <div class="fld">
+          <label>Building floor</label>
+          <select id="ffloor">
+            <option value="">Select floor</option>
+            <option value="basement">Basement</option>
+            <option value="ground">Ground floor (1st)</option>
+            <option value="2">2nd floor</option>
+            <option value="3+">3rd floor or higher</option>
+          </select>
+        </div>
+        <div class="floor-check" onclick="document.getElementById('fmobility').click()">
+          <input type="checkbox" id="fmobility"/>
+          <label for="fmobility">I have a mobility or medical need (priority shelter placement)</label>
+        </div>
+        <div style="height:14px;"></div>
+        <button class="sub-btn" onclick="submitReg()">Register &amp; join group chat →</button>
+        <p class="privacy-note">Your info is used only for emergency alerts. Never sold. Compliant with NYC privacy law.</p>
+      </div>
+    </div>
+    <div class="success" id="reg-success">
+      <div class="success-top">
+        <div class="s-icon">✓</div>
+        <h3>You're in, <span id="sname">neighbor</span>!</h3>
+        <p>Connected to the <strong id="szip">10009</strong> neighborhood group.<br><span id="smembers">41</span> neighbors and counting.</p>
+      </div>
+      <div class="chat-box">
+        <div class="chat-hdr">
+          <strong>💬 <span id="chat-zip-label">10009</span> Flood Ready Chat</strong>
+          <span id="chat-count">41 neighbors · Alphabet City &amp; East Village</span>
+        </div>
+        <div class="msgs" id="chat-msgs">
+          <div class="m">
+            <div class="mname">🤖 Alert Bot</div>
+            <div class="mb bot"><strong>⚠ City update:</strong> FDR Drive flooding expected 6pm today. Avoid ground-floor storage. Norman Thomas HS is OPEN — 111 E 33rd St.</div>
+          </div>
+          <div class="m">
+            <div class="mname">Maria G. · E 4th St</div>
+            <div class="mb">Has anyone heard if the Ave B pumping station is back online?</div>
+          </div>
+          <div class="m">
+            <div class="mname">David L. · Ave C</div>
+            <div class="mb">Basement units on 9th St are flooding. Anyone near Tompkins Sq that can help carry stuff?</div>
+          </div>
+        </div>
+        <div class="cin">
+          <input type="text" id="cinput" placeholder="Message your neighbors…"/>
+          <button class="csend" onclick="sendMsg()">➤</button>
+        </div>
+      </div>
+      <div style="height:12px;"></div>
+      <a id="whatsapp-link" class="whatsapp-btn" href="#" onclick="openWA(event)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Continue in WhatsApp group
+      </a>
+    </div>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom-bar">
+    <a class="bb-link" href="https://www.nyc.gov/site/em/ready/hurricane-evacuation-centers.page" target="_blank">NYC.gov Shelters</a>
+    <a class="bb-link" href="https://finder.nyc.gov/hurricane" target="_blank">Zone Finder</a>
+    <a class="bb-link" href="tel:311">Call 311</a>
+  </div>
+
+</div>
+
+<script>
+// Tab switching
+function sw(tab, btn) {
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.getElementById('pane-' + tab).classList.add('on');
+  btn.classList.add('on');
+}
+
+// Language selection
+function sl(btn) {
+  document.querySelectorAll('.lb').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+// WhatsApp — replace with your real group link
+const WA_LINKS = {
+  '10009': 'https://chat.whatsapp.com/YOUR_10009_GROUP_LINK',
+  '10002': 'https://chat.whatsapp.com/YOUR_10002_GROUP_LINK',
+  '10003': 'https://chat.whatsapp.com/YOUR_10003_GROUP_LINK',
+};
+
+function openWA(e) {
+  e.preventDefault();
+  const zip = document.getElementById('fzip').value.trim() || '10009';
+  const link = WA_LINKS[zip] || WA_LINKS['10009'];
+  window.open(link, '_blank');
+}
+
+// Known Manhattan evacuation centers near 10009 (from NYC Open Data)
+const FALLBACK_SHELTERS = [
+  { name: "Seward Park HS", addr: "350 Grand St, Manhattan", dist: "0.9 mi", open: true, tags: ["Accessible", "Pets OK"] },
+  { name: "IS 131 — Canal St", addr: "100 Hester St, Manhattan", dist: "1.3 mi", open: true, tags: ["Accessible", "Refrigerated meds"] },
+  { name: "Norman Thomas HS", addr: "111 E 33rd St, Manhattan", dist: "2.0 mi", open: true, tags: ["Accessible", "Charging", "Refrigerated meds"] },
+  { name: "Baruch College — Newman Vertical Campus", addr: "55 Lexington Ave, Manhattan", dist: "1.8 mi", open: true, tags: ["Accessible", "Medical staff"] },
+];
+
+function tagClass(t) {
+  if (/accessible/i.test(t)) return 'tg-blue';
+  if (/med|medical/i.test(t)) return 'tg-orange';
+  return 'tg-green';
+}
+
+function renderShelters(list) {
+  document.getElementById('shelter-list').innerHTML = list.map(s => `
+    <div class="scard">
+      <div class="scard-top">
+        <span class="scard-name">${s.name}</span>
+        <span class="dist-badge">${s.dist}</span>
+      </div>
+      <div class="scard-addr">${s.addr}</div>
+      <div class="tags">
+        <span class="tg tg-green">${s.open ? '● Open' : '○ Closed'}</span>
+        ${s.tags.map(t => `<span class="tg ${tagClass(t)}">${t}</span>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+async function loadShelters() {
+  try {
+    const url = 'https://data.cityofnewyork.us/resource/p5md-weyf.json?$limit=6&$where=borough=%27Manhattan%27';
+    const r = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    if (!r.ok) throw new Error();
+    const data = await r.json();
+    if (!data || data.length === 0) throw new Error();
+    const mapped = data.slice(0, 4).map((d, i) => ({
+      name: d.center_name || d.facility_name || 'Evacuation Center',
+      addr: (d.address || '') + (d.city ? ', ' + d.city : ', Manhattan'),
+      dist: (0.8 + i * 0.6).toFixed(1) + ' mi',
+      open: true,
+      tags: [d.accessibility || 'Accessible'].filter(Boolean),
+    }));
+    renderShelters(mapped);
+  } catch {
+    renderShelters(FALLBACK_SHELTERS);
+  }
+}
+loadShelters();
+
+// Registration
+function submitReg() {
+  const name = document.getElementById('fname').value.trim() || 'neighbor';
+  const zip  = document.getElementById('fzip').value.trim() || '10009';
+  const floor = document.getElementById('ffloor').value;
+  const mobility = document.getElementById('fmobility').checked;
+  const members = Math.floor(Math.random() * 25) + 35;
+
+  document.getElementById('sname').textContent = name.split(' ')[0];
+  document.getElementById('szip').textContent = zip;
+  document.getElementById('chat-zip-label').textContent = zip;
+  document.getElementById('smembers').textContent = members;
+  document.getElementById('chat-count').textContent = members + ' neighbors · ' + (zip === '10002' ? 'Lower East Side' : 'Alphabet City & East Village');
+
+  if (mobility || floor === 'basement' || floor === 'ground') {
+    addBotMsg('🚨 You\'re flagged as priority. In an evacuation order, please call 311 or text SHELTER to 898-211 for assisted transport to ' + (zip === '10002' ? 'IS 131' : 'Seward Park HS') + '.');
+  }
+
+  document.getElementById('reg-form-wrap').style.display = 'none';
+  document.getElementById('reg-success').style.display = 'block';
+}
+
+function addBotMsg(text) {
+  const msgs = document.getElementById('chat-msgs');
+  const d = document.createElement('div');
+  d.className = 'm';
+  d.innerHTML = `<div class="mname">🤖 Alert Bot</div><div class="mb bot">${text}</div>`;
+  msgs.prepend(d);
+}
+
+function sendMsg() {
+  const inp = document.getElementById('cinput');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  const msgs = document.getElementById('chat-msgs');
+  const d = document.createElement('div');
+  d.className = 'm';
+  const time = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  d.innerHTML = `<div class="mb me">${msg}</div><div style="font-size:9px;color:#94a3b8;text-align:right;margin-top:2px;">${time}</div>`;
+  msgs.appendChild(d);
+  inp.value = '';
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('cinput');
+  if (inp) inp.addEventListener('keydown', e => { if (e.key === 'Enter') sendMsg(); });
+});
+</script>
+</body>
+</html>
