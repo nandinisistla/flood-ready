@@ -5,45 +5,39 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
 <meta name="theme-color" content="#0a1f4e"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<title>Alphabet City Flood Ready</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<title>Rivas Real-time</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#fff;color:#1a202c;}
 .app{max-width:430px;margin:0 auto;height:100dvh;display:flex;flex-direction:column;background:#fff;overflow:hidden;}
-
-/* HEADER */
-.hdr{background:#0a1f4e;color:#fff;padding:14px 16px 13px;flex-shrink:0;}
-.hdr h1{font-size:17px;font-weight:700;letter-spacing:-.2px;margin-bottom:3px;}
+.hdr{background:#0a1f4e;color:#fff;padding:12px 16px 10px;flex-shrink:0;}
+.hdr h1{font-size:17px;font-weight:700;letter-spacing:-.2px;margin-bottom:2px;}
 .hdr-sub{font-size:12px;color:rgba(255,255,255,.65);}
-
-/* TABS */
+.lang-bar{background:#f8faff;border-bottom:1.5px solid #e2e8f0;padding:6px 12px;display:flex;align-items:center;gap:6px;flex-shrink:0;overflow-x:auto;}
+.lang-bar::-webkit-scrollbar{display:none;}
+.lang-bar-label{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;flex-shrink:0;}
+.ll{padding:4px 10px;border:1.5px solid #e2e8f0;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;background:#fff;color:#475569;white-space:nowrap;flex-shrink:0;}
+.ll.on{background:#0a1f4e;color:#fff;border-color:#0a1f4e;}
 .tabs{display:flex;border-bottom:2px solid #e2e8f0;flex-shrink:0;}
 .tab{flex:1;padding:11px 4px;font-size:12px;font-weight:700;text-align:center;cursor:pointer;border:none;background:none;color:#64748b;border-bottom:2.5px solid transparent;margin-bottom:-2px;letter-spacing:.02em;}
 .tab.on{color:#0a1f4e;border-bottom-color:#0a1f4e;}
-
 .pane{display:none;flex:1;overflow-y:auto;flex-direction:column;}
 .pane.on{display:flex;}
-
-/* ALERT BANNER */
 .aband{background:#fef3c7;border-bottom:1px solid #fcd34d;padding:10px 14px;font-size:12px;color:#78350f;display:flex;gap:7px;align-items:flex-start;flex-shrink:0;line-height:1.5;}
 .aband strong{font-weight:700;white-space:nowrap;}
-
-/* MAP */
-#map{height:320px;flex-shrink:0;width:100%;}
-.leaflet-popup-content-wrapper{border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+#map{height:300px;flex-shrink:0;width:100%;}
+.leaflet-popup-content-wrapper{border-radius:10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-width:190px;}
 .leaflet-popup-content{font-size:13px;line-height:1.5;margin:10px 14px;}
 .popup-name{font-weight:700;color:#0a1f4e;font-size:14px;margin-bottom:3px;}
-.popup-addr{color:#475569;font-size:12px;margin-bottom:5px;}
-.popup-tags{display:flex;gap:4px;flex-wrap:wrap;}
+.popup-addr{color:#475569;font-size:12px;margin-bottom:6px;}
+.popup-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;}
 .ptag{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:600;background:#dbeafe;color:#1e40af;}
-.ptag.g{background:#d1fae5;color:#065f46;}
-
-/* SHELTER LIST */
+.popup-route-btn{width:100%;padding:7px;background:#0a1f4e;color:white;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;}
 .sec{padding:12px 14px 16px;}
 .slabel{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#94a3b8;margin-bottom:8px;}
 .sc{border:1px solid #e2e8f0;border-radius:10px;padding:11px 13px;margin-bottom:8px;cursor:pointer;transition:border-color .15s;}
-.sc:active{border-color:#0a1f4e;}
+.sc:hover{border-color:#0a1f4e;}
 .sc-top{display:flex;justify-content:space-between;align-items:baseline;}
 .sc-name{font-size:13px;font-weight:700;color:#0a1f4e;}
 .sc-dist{font-size:11px;font-weight:700;color:#059669;}
@@ -53,15 +47,12 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sa
 .tb{background:#dbeafe;color:#1e40af;}
 .tg2{background:#d1fae5;color:#065f46;}
 .to{background:#ffedd5;color:#9a3412;}
-
 .ebox{background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px 14px;margin-top:4px;}
 .ebox h4{font-size:10px;font-weight:700;color:#991b1b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;}
 .erow{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid #fecaca;}
 .erow:last-child{border-bottom:none;}
 .enum{font-size:14px;font-weight:700;color:#dc2626;min-width:90px;}
 .elbl{font-size:11px;color:#7f1d1d;}
-
-/* REGISTER */
 .rhdr{padding:14px 16px 12px;background:#f8faff;border-bottom:1px solid #e2e8f0;flex-shrink:0;}
 .rhdr h2{font-size:15px;font-weight:700;color:#0a1f4e;margin-bottom:4px;}
 .rhdr p{font-size:12px;color:#64748b;line-height:1.6;}
@@ -78,8 +69,6 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sa
 .fcheck label{font-size:12px;color:#991b1b;font-weight:600;cursor:pointer;line-height:1.5;}
 .subbtn{width:100%;padding:13px;background:#0a1f4e;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;}
 .pnote{font-size:10px;color:#94a3b8;text-align:center;margin-top:8px;line-height:1.5;}
-
-/* SUCCESS */
 .succ{display:none;flex-direction:column;}
 .succ-top{background:#0a1f4e;padding:20px 16px;text-align:center;color:#fff;}
 .sico{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:22px;}
@@ -99,233 +88,308 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sa
 .cin input:focus{outline:none;border-color:#0a1f4e;}
 .csend{width:32px;height:32px;border-radius:50%;background:#0a1f4e;border:none;color:#fff;cursor:pointer;font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
 .wabtn{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 14px 16px;padding:12px;background:#25d366;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0a1f4e;color:white;padding:9px 18px;border-radius:20px;font-size:12px;font-weight:700;z-index:9999;opacity:0;transition:opacity .3s;white-space:nowrap;pointer-events:none;}
 </style>
 </head>
 <body>
 <div class="app">
-
   <div class="hdr">
-    <h1>Alphabet City Flood Ready</h1>
-    <div class="hdr-sub">East Village · 10009 · Zone A</div>
+    <h1>Rivas Real-time</h1>
+    <div class="hdr-sub" id="h-sub">East Village · 10009 · Zone A</div>
+  </div>
+
+  <div class="lang-bar">
+    <span class="lang-bar-label">Language:</span>
+    <button class="ll on" onclick="setLang('en',this)">English</button>
+    <button class="ll" onclick="setLang('es',this)">Español</button>
+    <button class="ll" onclick="setLang('zh',this)">中文</button>
+    <button class="ll" onclick="setLang('bn',this)">বাংলা</button>
+    <button class="ll" onclick="setLang('uk',this)">Українська</button>
+    <button class="ll" onclick="setLang('ru',this)">Русский</button>
   </div>
 
   <div class="tabs">
-    <button class="tab on" onclick="sw('map',this)">Map &amp; Shelters</button>
-    <button class="tab" onclick="sw('reg',this)">Join Neighbors</button>
+    <button class="tab on" id="tab-map" onclick="sw('map',this)">Map &amp; Shelters</button>
+    <button class="tab" id="tab-reg" onclick="sw('reg',this)">Join Neighbors</button>
   </div>
 
-  <!-- MAP PANE -->
   <div id="pane-map" class="pane on">
     <div class="aband">
-      <strong>&#9888; If ordered to evacuate:</strong>
-      <span>Walk WEST away from the East River. Avoid FDR Drive. Head to Ave A or 1st Ave and go north to your nearest shelter.</span>
+      <strong id="alert-title">&#9888; If ordered to evacuate:</strong>
+      <span id="alert-body">Walk WEST away from the East River. Avoid FDR Drive. Head to Ave A or 1st Ave and go north to your nearest shelter.</span>
     </div>
     <div id="map"></div>
     <div class="sec">
-      <div class="slabel">Evacuation centers near you</div>
-      <div id="slist">
-        <div class="sc" onclick="flyTo(40.7128,-73.9846,'Seward Park HS')">
-          <div class="sc-top"><span class="sc-name">Seward Park HS</span><span class="sc-dist">0.9 mi</span></div>
-          <div class="sc-addr">350 Grand St, Manhattan</div>
-          <div class="tags"><span class="tg tg2">Open</span><span class="tg tb">Wheelchair accessible</span><span class="tg tb">Pets welcome</span></div>
-        </div>
-        <div class="sc" onclick="flyTo(40.7151,-73.9878,'IS 131')">
-          <div class="sc-top"><span class="sc-name">IS 131 — Hester St</span><span class="sc-dist">1.3 mi</span></div>
-          <div class="sc-addr">100 Hester St, Manhattan</div>
-          <div class="tags"><span class="tg tg2">Open</span><span class="tg tb">Wheelchair accessible</span><span class="tg to">Refrigerated meds</span></div>
-        </div>
-        <div class="sc" onclick="flyTo(40.7449,-73.9840,'Norman Thomas HS')">
-          <div class="sc-top"><span class="sc-name">Norman Thomas HS</span><span class="sc-dist">2.0 mi</span></div>
-          <div class="sc-addr">111 E 33rd St, Manhattan</div>
-          <div class="tags"><span class="tg tg2">Open</span><span class="tg tb">Wheelchair accessible</span><span class="tg to">Refrigerated meds</span><span class="tg tg2">Phone charging</span></div>
-        </div>
-        <div class="sc" onclick="flyTo(40.7397,-73.9832,'Baruch College')">
-          <div class="sc-top"><span class="sc-name">Baruch College</span><span class="sc-dist">1.8 mi</span></div>
-          <div class="sc-addr">55 Lexington Ave, Manhattan</div>
-          <div class="tags"><span class="tg tg2">Open</span><span class="tg tb">Wheelchair accessible</span><span class="tg to">Medical staff on site</span></div>
-        </div>
+      <div class="slabel" id="shelters-label">Evacuation centers near you</div>
+      <div class="sc" onclick="showRoute(40.7128,-73.9846,'Seward Park HS')">
+        <div class="sc-top"><span class="sc-name">Seward Park HS</span><span class="sc-dist">0.9 mi</span></div>
+        <div class="sc-addr">350 Grand St, Manhattan</div>
+        <div class="tags"><span class="tg tg2" data-i18n="tag_open">Open</span><span class="tg tb" data-i18n="tag_accessible">Wheelchair accessible</span><span class="tg tb" data-i18n="tag_pets">Pets welcome</span></div>
       </div>
-
+      <div class="sc" onclick="showRoute(40.7151,-73.9878,'IS 131')">
+        <div class="sc-top"><span class="sc-name">IS 131 — Hester St</span><span class="sc-dist">1.3 mi</span></div>
+        <div class="sc-addr">100 Hester St, Manhattan</div>
+        <div class="tags"><span class="tg tg2" data-i18n="tag_open">Open</span><span class="tg tb" data-i18n="tag_accessible">Wheelchair accessible</span><span class="tg to" data-i18n="tag_meds">Refrigerated meds</span></div>
+      </div>
+      <div class="sc" onclick="showRoute(40.7449,-73.9840,'Norman Thomas HS')">
+        <div class="sc-top"><span class="sc-name">Norman Thomas HS</span><span class="sc-dist">2.0 mi</span></div>
+        <div class="sc-addr">111 E 33rd St, Manhattan</div>
+        <div class="tags"><span class="tg tg2" data-i18n="tag_open">Open</span><span class="tg tb" data-i18n="tag_accessible">Wheelchair accessible</span><span class="tg to" data-i18n="tag_meds">Refrigerated meds</span><span class="tg tg2" data-i18n="tag_charging">Phone charging</span></div>
+      </div>
+      <div class="sc" onclick="showRoute(40.7397,-73.9832,'Baruch College')">
+        <div class="sc-top"><span class="sc-name">Baruch College</span><span class="sc-dist">1.8 mi</span></div>
+        <div class="sc-addr">55 Lexington Ave, Manhattan</div>
+        <div class="tags"><span class="tg tg2" data-i18n="tag_open">Open</span><span class="tg tb" data-i18n="tag_accessible">Wheelchair accessible</span><span class="tg to" data-i18n="tag_medical">Medical staff</span></div>
+      </div>
       <div class="ebox">
-        <h4>Emergency numbers</h4>
-        <div class="erow"><span class="enum">911</span><span class="elbl">Fire, medical, police</span></div>
-        <div class="erow"><span class="enum">311</span><span class="elbl">Shelter locations &amp; city services</span></div>
-        <div class="erow"><span class="enum">nyc.gov/em</span><span class="elbl">NYC Emergency Management updates</span></div>
+        <h4 id="emergency-title">Emergency numbers</h4>
+        <div class="erow"><a href="tel:911" style="color:#dc2626;font-size:14px;font-weight:700;text-decoration:none;min-width:90px;display:inline-block;">911</a><span class="elbl" id="e911">Fire, medical, police</span></div>
+        <div class="erow"><a href="tel:311" style="color:#dc2626;font-size:14px;font-weight:700;text-decoration:none;min-width:90px;display:inline-block;">311</a><span class="elbl" id="e311">Shelter locations &amp; city services</span></div>
+        <div class="erow" onclick="goToMap()" style="cursor:pointer;"><span style="color:#dc2626;font-size:13px;font-weight:700;min-width:90px;display:inline-block;">FEMA ↗</span><span class="elbl" id="efema">Disaster recovery — see map &amp; shelters</span></div>
       </div>
     </div>
   </div>
 
-  <!-- REGISTER PANE -->
   <div id="pane-reg" class="pane">
     <div id="regwrap">
       <div class="rhdr">
-        <h2>Join your neighborhood group</h2>
-        <p>Register to receive flood alerts in your language and connect with neighbors in your building and block before, during, and after a storm.</p>
+        <h2 id="reg-title">Join your neighborhood group</h2>
+        <p id="reg-desc">Register to receive flood alerts in your language and connect with neighbors before, during, and after a storm.</p>
       </div>
       <div class="fbody">
-        <div class="fld"><label>Full name</label><input type="text" id="fn" placeholder="Your name" autocomplete="name"/></div>
-        <div class="fld"><label>Phone number</label><input type="tel" id="fp" placeholder="+1 (212) 555-0000" autocomplete="tel"/></div>
-        <div class="fld"><label>Email address</label><input type="email" id="fe" placeholder="you@email.com" autocomplete="email"/></div>
-        <div class="fld"><label>Zip code</label><input type="text" id="fz" placeholder="10009" maxlength="5" inputmode="numeric"/></div>
+        <div class="fld"><label id="l-name">Full name</label><input type="text" id="fn" placeholder="Your name" autocomplete="name"/></div>
+        <div class="fld"><label id="l-phone">Phone number</label><input type="tel" id="fp" placeholder="+1 (212) 555-0000" autocomplete="tel"/></div>
+        <div class="fld"><label id="l-email">Email address</label><input type="email" id="fe" placeholder="you@email.com" autocomplete="email"/></div>
+        <div class="fld"><label id="l-zip">Zip code</label><input type="text" id="fz" placeholder="10009" maxlength="5" inputmode="numeric"/></div>
         <div class="fld">
-          <label>Preferred language for alerts</label>
+          <label id="l-lang">Preferred language for alerts</label>
           <div class="lrow">
             <button class="lb on" onclick="sl(this)">English</button>
             <button class="lb" onclick="sl(this)">Español</button>
             <button class="lb" onclick="sl(this)">中文</button>
             <button class="lb" onclick="sl(this)">বাংলা</button>
+            <button class="lb" onclick="sl(this)">Українська</button>
+            <button class="lb" onclick="sl(this)">Русский</button>
           </div>
         </div>
         <div class="fld">
-          <label>Floor in your building</label>
+          <label id="l-floor">Floor in your building</label>
           <select id="ff">
-            <option value="">Select your floor</option>
-            <option value="basement">Basement</option>
-            <option value="ground">Ground floor (1st)</option>
-            <option value="2">2nd floor</option>
-            <option value="3+">3rd floor or higher</option>
+            <option value="" id="fl-sel">Select your floor</option>
+            <option value="basement" id="fl-b">Basement</option>
+            <option value="ground" id="fl-g">Ground floor (1st)</option>
+            <option value="2" id="fl-2">2nd floor</option>
+            <option value="3+" id="fl-3">3rd floor or higher</option>
           </select>
         </div>
         <div class="fcheck" onclick="document.getElementById('fm').click()">
           <input type="checkbox" id="fm"/>
-          <label for="fm">I have a mobility or medical need and may need help evacuating — flag me for priority transport</label>
+          <label for="fm" id="l-mobility">I have a mobility or medical need and may need help evacuating — flag me for priority transport</label>
         </div>
-        <button class="subbtn" onclick="doReg()">Register &amp; join group chat</button>
-        <p class="pnote">Used only for emergency alerts. Never sold or shared commercially.</p>
+        <button class="subbtn" id="reg-btn" onclick="doReg()">Register &amp; join group chat</button>
+        <p class="pnote" id="reg-note">Used only for emergency alerts. Never sold or shared commercially.</p>
       </div>
     </div>
-
     <div class="succ" id="succwrap">
       <div class="succ-top">
         <div class="sico">&#10003;</div>
-        <h3>You&#39;re registered, <span id="sn">neighbor</span>!</h3>
-        <p>You&#39;re now part of the <strong id="sz">10009</strong> group.<br/><span id="sm">41</span> neighbors registered on your block.</p>
+        <h3 id="succ-h">You're registered, <span id="sn">neighbor</span>!</h3>
+        <p><span id="sz">10009</span> group · <span id="sm">41</span> <span id="succ-neighbors">neighbors registered</span></p>
       </div>
       <div class="chatbox">
         <div class="chdr">
-          <strong>&#128172; <span id="czl">10009</span> Neighborhood Flood Chat</strong>
+          <strong>&#128172; <span id="czl">10009</span> <span id="chat-label">Neighborhood Flood Chat</span></strong>
           <span id="cct">Alphabet City &amp; East Village</span>
         </div>
         <div class="msgs" id="chatmsgs">
-          <div class="m"><div class="mn">Alert Bot</div><div class="mb bot"><strong>&#9888; City update:</strong> FDR Drive flooding expected by 6pm. Keep belongings off ground floors. Norman Thomas HS shelter is open — 111 E 33rd St.</div></div>
+          <div class="m"><div class="mn">Alert Bot</div><div class="mb bot"><strong>&#9888;</strong> FDR Drive flooding expected by 6pm. Keep belongings off ground floors. Norman Thomas HS is open — 111 E 33rd St.</div></div>
           <div class="m"><div class="mn">Maria G. · E 4th St</div><div class="mb">Has anyone heard if the Ave B pumping station is back online?</div></div>
-          <div class="m"><div class="mn">David L. · Ave C</div><div class="mb">Basement on 9th St is flooding. Anyone near Tompkins Sq able to help carry stuff out?</div></div>
+          <div class="m"><div class="mn">David L. · Ave C</div><div class="mb">Basement on 9th St is flooding. Anyone near Tompkins Sq able to help?</div></div>
         </div>
         <div class="cin">
-          <input type="text" id="ci" placeholder="Message your neighbors&#8230;"/>
+          <input type="text" id="ci" placeholder="Message your neighbors…"/>
           <button class="csend" onclick="send()">&#10148;</button>
         </div>
       </div>
       <a class="wabtn" id="walink" href="https://chat.whatsapp.com/REPLACE_WITH_YOUR_GROUP_LINK" target="_blank">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="white" style="flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        Open WhatsApp group for 10009
+        <span id="wa-label">Open WhatsApp group</span>
       </a>
     </div>
   </div>
-
 </div>
+<div id="toast"></div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-// Tab switching
-function sw(t,b){
+const T={
+  en:{leg_you:'You are here',leg_shelter:'Evacuation shelter',leg_zone:'Flood Zone A',leg_route:'Route to shelter',tag_open:'Open',tag_accessible:'Wheelchair accessible',tag_pets:'Pets welcome',tag_meds:'Refrigerated meds',tag_charging:'Phone charging',tag_medical:'Medical staff',sub:'East Village · 10009 · Zone A',tab_map:'Map & Shelters',tab_reg:'Join Neighbors',alert_title:'⚠ If ordered to evacuate:',alert_body:'Walk WEST away from the East River. Avoid FDR Drive. Head to Ave A or 1st Ave and go north to your nearest shelter.',shelters_label:'Evacuation centers near you',emergency_title:'Emergency numbers',e911:'Fire, medical, police',e311:'Shelter locations & city services',efema:'Disaster recovery — see map & shelters',reg_title:'Join your neighborhood group',reg_desc:'Register to receive flood alerts in your language and connect with neighbors before, during, and after a storm.',l_name:'Full name',l_phone:'Phone number',l_email:'Email address',l_zip:'Zip code',l_lang:'Preferred language for alerts',l_floor:'Floor in your building',fl_sel:'Select your floor',fl_b:'Basement',fl_g:'Ground floor (1st)',fl_2:'2nd floor',fl_3:'3rd floor or higher',l_mobility:'I have a mobility or medical need and may need help evacuating — flag me for priority transport',reg_btn:'Register & join group chat',reg_note:'Used only for emergency alerts. Never sold or shared commercially.',succ_h:"You're registered,",succ_neighbors:'neighbors registered',chat_label:'Neighborhood Flood Chat',wa_label:'Open WhatsApp group',route_btn:'Show route to here',route_toast:'Showing route to'},
+  es:{leg_you:'Estás aquí',leg_shelter:'Refugio de evacuación',leg_zone:'Zona de inundación A',leg_route:'Ruta al refugio',tag_open:'Abierto',tag_accessible:'Accesible en silla de ruedas',tag_pets:'Se aceptan mascotas',tag_meds:'Medicamentos refrigerados',tag_charging:'Carga de celular',tag_medical:'Personal médico',sub:'East Village · 10009 · Zona A',tab_map:'Mapa y Refugios',tab_reg:'Únete',alert_title:'⚠ Si se ordena evacuar:',alert_body:'Camina hacia el OESTE. Evita FDR Drive. Dirígete a Ave A o 1st Ave hacia el norte al refugio más cercano.',shelters_label:'Centros de evacuación cercanos',emergency_title:'Números de emergencia',e911:'Incendios, médicos, policía',e311:'Refugios y servicios de la ciudad',efema:'Recuperación — ver mapa y refugios',reg_title:'Únete al grupo del vecindario',reg_desc:'Regístrate para recibir alertas en tu idioma y conectarte con vecinos antes, durante y después de la tormenta.',l_name:'Nombre completo',l_phone:'Teléfono',l_email:'Correo electrónico',l_zip:'Código postal',l_lang:'Idioma preferido para alertas',l_floor:'Piso de tu edificio',fl_sel:'Selecciona tu piso',fl_b:'Sótano',fl_g:'Planta baja (1er piso)',fl_2:'2do piso',fl_3:'3er piso o superior',l_mobility:'Tengo necesidades de movilidad o médicas — márcame para transporte prioritario',reg_btn:'Registrarse y unirse al chat',reg_note:'Solo para alertas de emergencia. Nunca vendido.',succ_h:'¡Estás registrado/a,',succ_neighbors:'vecinos registrados',chat_label:'Chat de Inundación',wa_label:'Abrir grupo de WhatsApp',route_btn:'Mostrar ruta aquí',route_toast:'Ruta hacia'},
+  zh:{leg_you:'您在这里',leg_shelter:'疏散避难所',leg_zone:'洪水A区',leg_route:'前往避难所路线',tag_open:'开放',tag_accessible:'无障碍轮椅',tag_pets:'欢迎宠物',tag_meds:'冷藏药品',tag_charging:'手机充电',tag_medical:'医疗人员',sub:'东村 · 10009 · A区',tab_map:'地图和避难所',tab_reg:'加入邻居',alert_title:'⚠ 如果下达疏散命令：',alert_body:'向西远离东河。避开FDR大道。前往A大道或第一大道向北前往最近的避难所。',shelters_label:'附近疏散中心',emergency_title:'紧急电话',e911:'火灾、医疗、警察',e311:'避难所位置和城市服务',efema:'灾害恢复 — 查看地图和避难所',reg_title:'加入您的社区群组',reg_desc:'注册以接收您语言的洪水警报，并与邻居保持联系。',l_name:'全名',l_phone:'电话号码',l_email:'电子邮件',l_zip:'邮政编码',l_lang:'警报首选语言',l_floor:'您所在楼层',fl_sel:'选择楼层',fl_b:'地下室',fl_g:'底层（1楼）',fl_2:'2楼',fl_3:'3楼或以上',l_mobility:'我有行动或医疗需求，可能需要帮助疏散',reg_btn:'注册并加入群聊',reg_note:'仅用于紧急警报。绝不出售。',succ_h:'您已注册，',succ_neighbors:'位邻居已注册',chat_label:'社区洪水聊天',wa_label:'打开WhatsApp群组',route_btn:'显示前往路线',route_toast:'路线前往'},
+  bn:{leg_you:'আপনি এখানে',leg_shelter:'আশ্রয়কেন্দ্র',leg_zone:'বন্যা অঞ্চল এ',leg_route:'আশ্রয়ে যাওয়ার পথ',tag_open:'খোলা',tag_accessible:'হুইলচেয়ার সুবিধা',tag_pets:'পোষা প্রাণী স্বাগত',tag_meds:'শীতলীকৃত ওষুধ',tag_charging:'ফোন চার্জিং',tag_medical:'চিকিৎসা কর্মী',sub:'ইস্ট ভিলেজ · ১০০০৯ · জোন এ',tab_map:'মানচিত্র ও আশ্রয়',tab_reg:'প্রতিবেশীতে যোগ দিন',alert_title:'⚠ সরিয়ে নেওয়ার আদেশ হলে:',alert_body:'পূর্ব নদী থেকে পশ্চিম দিকে হাঁটুন। FDR ড্রাইভ এড়িয়ে চলুন। নিকটতম আশ্রয়ে উত্তরে যান।',shelters_label:'কাছের আশ্রয়কেন্দ্র',emergency_title:'জরুরি নম্বর',e911:'আগুন, চিকিৎসা, পুলিশ',e311:'আশ্রয় অবস্থান ও সেবা',efema:'দুর্যোগ পুনরুদ্ধার — মানচিত্র দেখুন',reg_title:'আপনার পাড়ার গ্রুপে যোগ দিন',reg_desc:'আপনার ভাষায় বন্যার সতর্কতা পেতে নিবন্ধন করুন।',l_name:'পুরো নাম',l_phone:'ফোন নম্বর',l_email:'ইমেইল',l_zip:'জিপ কোড',l_lang:'সতর্কতার জন্য পছন্দের ভাষা',l_floor:'আপনার ভবনের তলা',fl_sel:'তলা নির্বাচন করুন',fl_b:'বেসমেন্ট',fl_g:'নিচতলা',fl_2:'২য় তলা',fl_3:'৩য় তলা বা উপরে',l_mobility:'আমার গতিশীলতা বা চিকিৎসার প্রয়োজন আছে — অগ্রাধিকার পরিবহনের জন্য চিহ্নিত করুন',reg_btn:'নিবন্ধন করুন ও গ্রুপ চ্যাটে যোগ দিন',reg_note:'শুধুমাত্র জরুরি সতর্কতার জন্য। কখনো বিক্রি নয়।',succ_h:'আপনি নিবন্ধিত,',succ_neighbors:'প্রতিবেশী নিবন্ধিত',chat_label:'পাড়ার বন্যা চ্যাট',wa_label:'WhatsApp গ্রুপ খুলুন',route_btn:'মানচিত্রে রুট দেখান',route_toast:'পথ'},
+  uk:{leg_you:'Ви тут',leg_shelter:'Евакуаційний притулок',leg_zone:'Зона повені А',leg_route:'Маршрут до притулку',tag_open:'Відкрито',tag_accessible:'Доступно для інвалідних візків',tag_pets:'Домашні тварини вітаються',tag_meds:'Охолоджені ліки',tag_charging:'Зарядка телефону',tag_medical:'Медичний персонал',sub:'Іст-Вілледж · 10009 · Зона А',tab_map:'Карта та Притулки',tab_reg:'Приєднатися',alert_title:'⚠ У разі наказу про евакуацію:',alert_body:'Йдіть на ЗАХІД від Іст-Рівер. Уникайте FDR Drive. Прямуйте до Ave A або 1st Ave на північ до найближчого притулку.',shelters_label:'Найближчі евакуаційні центри',emergency_title:'Екстрені номери',e911:'Пожежа, медицина, поліція',e311:'Розташування притулків та міські служби',efema:'Відновлення — дивіться карту',reg_title:'Приєднайтесь до групи сусідів',reg_desc:'Зареєструйтесь, щоб отримувати сповіщення про повені вашою мовою та спілкуватися із сусідами.',l_name:"Повне ім'я",l_phone:'Номер телефону',l_email:'Електронна пошта',l_zip:'Поштовий індекс',l_lang:'Бажана мова для сповіщень',l_floor:'Поверх у вашому будинку',fl_sel:'Оберіть поверх',fl_b:'Підвал',fl_g:'Перший поверх',fl_2:'2-й поверх',fl_3:'3-й поверх або вище',l_mobility:'Маю потреби у мобільності або медичну допомогу — позначте для пріоритетного транспорту',reg_btn:'Зареєструватись та приєднатись до чату',reg_note:'Використовується лише для надзвичайних сповіщень. Ніколи не продається.',succ_h:'Ви зареєстровані,',succ_neighbors:'сусідів зареєстровано',chat_label:'Чат про повені',wa_label:'Відкрити групу WhatsApp',route_btn:'Показати маршрут',route_toast:'Маршрут до'},
+  ru:{leg_you:'Вы здесь',leg_shelter:'Эвакуационное убежище',leg_zone:'Зона наводнения А',leg_route:'Маршрут к убежищу',tag_open:'Открыто',tag_accessible:'Доступно для колясок',tag_pets:'Домашние животные приветствуются',tag_meds:'Охлаждённые лекарства',tag_charging:'Зарядка телефона',tag_medical:'Медицинский персонал',sub:'Ист-Виллидж · 10009 · Зона А',tab_map:'Карта и Убежища',tab_reg:'Присоединиться',alert_title:'⚠ При приказе об эвакуации:',alert_body:'Идите на ЗАПАД от Ист-Ривер. Избегайте FDR Drive. Направляйтесь к Ave A или 1st Ave на север к ближайшему убежищу.',shelters_label:'Ближайшие эвакуационные центры',emergency_title:'Экстренные номера',e911:'Пожар, медицина, полиция',e311:'Расположение убежищ и городские службы',efema:'Восстановление — см. карту',reg_title:'Присоединитесь к группе соседей',reg_desc:'Зарегистрируйтесь, чтобы получать предупреждения о наводнениях на вашем языке.',l_name:'Полное имя',l_phone:'Номер телефона',l_email:'Электронная почта',l_zip:'Почтовый индекс',l_lang:'Предпочтительный язык для оповещений',l_floor:'Этаж в вашем здании',fl_sel:'Выберите этаж',fl_b:'Подвал',fl_g:'Первый этаж',fl_2:'2-й этаж',fl_3:'3-й этаж и выше',l_mobility:'У меня есть потребности в мобильности или медицинские нужды — пометьте для приоритетной транспортировки',reg_btn:'Зарегистрироваться и присоединиться к чату',reg_note:'Используется только для экстренных оповещений. Никогда не продаётся.',succ_h:'Вы зарегистрированы,',succ_neighbors:'соседей зарегистрировано',chat_label:'Чат о наводнении',wa_label:'Открыть группу WhatsApp',route_btn:'Показать маршрут',route_toast:'Маршрут до'},
+};
+
+let curLang='en';
+function setLang(lang,btn){
+  curLang=lang;
+  document.documentElement.setAttribute('lang',lang);
+  document.querySelectorAll('.ll').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  const t=T[lang];
+  const ids={
+    'h-sub':'sub','tab-map':'tab_map','tab-reg':'tab_reg',
+    'alert-title':'alert_title','alert-body':'alert_body',
+    'shelters-label':'shelters_label','emergency-title':'emergency_title',
+    'e911':'e911','e311':'e311','efema':'efema',
+    'reg-title':'reg_title','reg-desc':'reg_desc',
+    'l-name':'l_name','l-phone':'l_phone','l-email':'l_email','l-zip':'l_zip',
+    'l-lang':'l_lang','l-floor':'l_floor',
+    'fl-sel':'fl_sel','fl-b':'fl_b','fl-g':'fl_g','fl-2':'fl_2','fl-3':'fl_3',
+    'l-mobility':'l_mobility','reg-btn':'reg_btn','reg-note':'reg_note',
+    'succ-h':'succ_h','succ-neighbors':'succ_neighbors',
+    'chat-label':'chat_label','wa-label':'wa_label'
+  };
+  Object.entries(ids).forEach(([id,key])=>{
+    const el=document.getElementById(id);
+    if(el&&t[key])el.textContent=t[key];
+  });
+  // Update all data-i18n tagged elements (shelter cards, tags, etc.)
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.getAttribute('data-i18n');
+    if(t[key])el.textContent=t[key];
+  });
+}
+
+function sw(tab,btn){
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
-  document.getElementById('pane-'+t).classList.add('on');
-  b.classList.add('on');
-  if(t==='map' && !window._mapInit) initMap();
+  document.getElementById('pane-'+tab).classList.add('on');
+  btn.classList.add('on');
+  if(tab==='map'&&map){setTimeout(function(){map.invalidateSize();},100);}
+}
+function goToMap(){
+  const tabBtn=document.getElementById('tab-map');
+  sw('map',tabBtn);
+  const mapEl=document.getElementById('map');
+  if(mapEl)mapEl.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function sl(b){document.querySelectorAll('.lb').forEach(x=>x.classList.remove('on'));b.classList.add('on');}
 
-// WhatsApp group links — replace with real invite URLs
-const WA={
-  '10009':'https://chat.whatsapp.com/REPLACE_WITH_10009_LINK',
-  '10002':'https://chat.whatsapp.com/REPLACE_WITH_10002_LINK',
-};
+const WA={'10009':'https://chat.whatsapp.com/REPLACE_WITH_10009_LINK','10002':'https://chat.whatsapp.com/REPLACE_WITH_10002_LINK'};
 
-// Leaflet map
-let map, _mapInit=false;
-window._mapInit=false;
+let map,routeLayer=null;
 
 function initMap(){
-  window._mapInit=true;
-
-  map = L.map('map',{zoomControl:true,scrollWheelZoom:false}).setView([40.7264,-73.9793],14);
-
+  map=L.map('map',{zoomControl:true,scrollWheelZoom:false}).setView([40.7264,-73.9793],14);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
-    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
-    maxZoom:19
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',maxZoom:19
   }).addTo(map);
 
-  // Flood Zone A polygon — Alphabet City / East Village eastern edge
-  const floodZone = [
+  // Flood Zone A — RED
+  L.polygon([
     [40.7185,-73.9751],[40.7210,-73.9740],[40.7240,-73.9732],
     [40.7270,-73.9725],[40.7300,-73.9720],[40.7310,-73.9750],
     [40.7290,-73.9760],[40.7260,-73.9768],[40.7230,-73.9775],
     [40.7200,-73.9778],[40.7185,-73.9751]
-  ];
-  L.polygon(floodZone,{
-    color:'#3b82f6',weight:2,dashArray:'6,4',
-    fillColor:'#3b82f6',fillOpacity:0.12
-  }).addTo(map).bindPopup('<div class="popup-name">Hurricane Evacuation Zone A</div><div class="popup-addr">Highest flood risk from storm surge. Mandatory evacuation when ordered.</div>');
+  ],{color:'#dc2626',weight:2,dashArray:'5,4',fillColor:'#dc2626',fillOpacity:0.15})
+  .addTo(map).bindPopup('<div class="popup-name" style="color:#dc2626;">Hurricane Evacuation Zone A</div><div class="popup-addr">Highest flood risk. Mandatory evacuation when ordered.</div>');
 
-  // You are here marker
-  const youIcon = L.divIcon({
+  // You are here
+  L.marker([40.7264,-73.9793],{icon:L.divIcon({
     html:'<div style="width:14px;height:14px;border-radius:50%;background:#dc2626;border:3px solid white;box-shadow:0 0 0 2px #dc2626;"></div>',
     iconSize:[14,14],iconAnchor:[7,7],className:''
-  });
-  L.marker([40.7264,-73.9793],{icon:youIcon}).addTo(map)
-    .bindPopup('<div class="popup-name" style="color:#dc2626;">You are here</div><div class="popup-addr">Alphabet City · Zone A</div>');
+  })}).addTo(map).bindPopup('<div class="popup-name" style="color:#dc2626;">You are here</div><div class="popup-addr">Alphabet City · Zone A</div>');
 
-  // Shelter pin icon
-  function shelterIcon(color){
+  // Shelter icon — solid navy circle with house SVG, no emoji
+  function sIcon(){
     return L.divIcon({
-      html:`<div style="width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${color};border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;"><span style="transform:rotate(45deg);font-size:13px;">&#127968;</span></div>`,
-      iconSize:[30,30],iconAnchor:[15,30],popupAnchor:[0,-32],className:''
+      html:'<div style="width:28px;height:28px;border-radius:50%;background:#0a1f4e;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>',
+      iconSize:[28,28],iconAnchor:[14,14],popupAnchor:[0,-16],className:''
     });
   }
 
   const shelters=[
-    {lat:40.7128,lng:-73.9846,name:'Seward Park HS',addr:'350 Grand St',dist:'0.9 mi',tags:['Wheelchair accessible','Pets welcome'],color:'#0a1f4e'},
-    {lat:40.7151,lng:-73.9878,name:'IS 131 — Hester St',addr:'100 Hester St',dist:'1.3 mi',tags:['Wheelchair accessible','Refrigerated meds'],color:'#0a1f4e'},
-    {lat:40.7449,lng:-73.9840,name:'Norman Thomas HS',addr:'111 E 33rd St',dist:'2.0 mi',tags:['Wheelchair accessible','Phone charging','Refrigerated meds'],color:'#059669'},
-    {lat:40.7397,lng:-73.9832,name:'Baruch College',addr:'55 Lexington Ave',dist:'1.8 mi',tags:['Wheelchair accessible','Medical staff'],color:'#059669'},
+    {lat:40.7128,lng:-73.9846,name:'Seward Park HS',addr:'350 Grand St',dist:'0.9 mi',tags:['Wheelchair accessible','Pets welcome']},
+    {lat:40.7151,lng:-73.9878,name:'IS 131 — Hester St',addr:'100 Hester St',dist:'1.3 mi',tags:['Wheelchair accessible','Refrigerated meds']},
+    {lat:40.7449,lng:-73.9840,name:'Norman Thomas HS',addr:'111 E 33rd St',dist:'2.0 mi',tags:['Wheelchair accessible','Phone charging','Refrigerated meds']},
+    {lat:40.7397,lng:-73.9832,name:'Baruch College',addr:'55 Lexington Ave',dist:'1.8 mi',tags:['Wheelchair accessible','Medical staff']},
   ];
 
   shelters.forEach(s=>{
-    L.marker([s.lat,s.lng],{icon:shelterIcon(s.color)}).addTo(map)
-      .bindPopup(`<div class="popup-name">${s.name}</div><div class="popup-addr">${s.addr} · ${s.dist}</div><div class="popup-tags">${s.tags.map(t=>`<span class="ptag">${t}</span>`).join('')}</div>`);
+    const routeBtn=`<button class="popup-route-btn" onclick="drawRoute(${s.lat},${s.lng},'${s.name}')">${T[curLang].route_btn}</button>`;
+    L.marker([s.lat,s.lng],{icon:sIcon()}).addTo(map)
+      .bindPopup(`<div class="popup-name">${s.name}</div><div class="popup-addr">${s.addr} · ${s.dist}</div><div class="popup-tags">${s.tags.map(t=>`<span class="ptag">${t}</span>`).join('')}</div>${routeBtn}`);
   });
 
-  // Evacuation route arrow — west along 7th St
-  L.polyline([[40.7264,-73.9793],[40.7264,-73.9900],[40.7290,-73.9950]],{
-    color:'#f59e0b',weight:3,dashArray:'8,5'
-  }).addTo(map).bindPopup('<div class="popup-name" style="color:#b45309;">Evacuation route</div><div class="popup-addr">Head west on local streets toward Ave A then north</div>');
-
-  // Legend
-  const legend = L.control({position:'bottomleft'});
+  // Legend — uses IDs so setLang can translate labels
+  const legend=L.control({position:'bottomleft'});
   legend.onAdd=function(){
     const d=L.DomUtil.create('div');
-    d.style.cssText='background:white;padding:7px 10px;border-radius:8px;font-size:10px;line-height:1.8;font-family:-apple-system,sans-serif;border:1px solid #e2e8f0;';
+    d.style.cssText='background:white;padding:7px 10px;border-radius:8px;font-size:10px;line-height:1.9;font-family:-apple-system,sans-serif;border:1px solid #e2e8f0;';
     d.innerHTML=
-      '<div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:10px;border-radius:50%;background:#dc2626;"></div> You are here</div>'+
-      '<div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:10px;border-radius:50%;background:#0a1f4e;"></div> Evacuation shelter</div>'+
-      '<div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:10px;background:rgba(59,130,246,.3);border:1px dashed #3b82f6;"></div> Flood Zone A</div>'+
-      '<div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:2px;background:#f59e0b;border-top:2px dashed #f59e0b;"></div> Evacuation route</div>';
+      '<div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:10px;border-radius:50%;background:#dc2626;"></div><span data-i18n="leg_you">You are here</span></div>'+
+      '<div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:10px;border-radius:50%;background:#0a1f4e;"></div><span data-i18n="leg_shelter">Evacuation shelter</span></div>'+
+      '<div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:10px;background:rgba(220,38,38,.2);border:1.5px dashed #dc2626;"></div><span data-i18n="leg_zone">Flood Zone A</span></div>'+
+      '<div style="display:flex;align-items:center;gap:5px;"><div style="width:10px;height:3px;background:#059669;"></div><span data-i18n="leg_route">Route to shelter</span></div>';
     return d;
   };
   legend.addTo(map);
+  // Apply current language to the freshly-added legend
+  setTimeout(function(){
+    if(curLang!=='en'){
+      const t=T[curLang];
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const key=el.getAttribute('data-i18n');
+        if(t[key])el.textContent=t[key];
+      });
+    }
+  },50);
 }
 
-// Init map on load
-window.addEventListener('load', initMap);
-
-function flyTo(lat,lng,name){
-  sw('map', document.querySelector('.tab'));
-  setTimeout(()=>{ if(map) map.flyTo([lat,lng],16); },100);
+function drawRoute(lat,lng,name){
+  if(!map)return;
+  if(routeLayer){map.removeLayer(routeLayer);routeLayer=null;}
+  const origin=[40.7264,-73.9793];
+  // Route: go west to Ave A, then north/south to shelter
+  const mid=[origin[0],-73.9900];
+  const waypoints=[origin,mid,[lat,-73.9900],[lat,lng]];
+  routeLayer=L.polyline(waypoints,{color:'#059669',weight:4,opacity:.9}).addTo(map);
+  map.fitBounds(routeLayer.getBounds(),{padding:[30,30]});
+  map.closePopup();
+  toast((T[curLang].route_toast||'Route to')+' '+name);
 }
 
-// Registration
+function showRoute(lat,lng,name){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  document.getElementById('pane-map').classList.add('on');
+  document.getElementById('tab-map').classList.add('on');
+  setTimeout(()=>{ map.setView([40.7264,-73.9793],14); drawRoute(lat,lng,name); },100);
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(t._t);t._t=setTimeout(()=>{t.style.opacity='0';},3000);
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  // Auto-open tab from URL param e.g. ?tab=map or ?tab=reg
+  // So links from FEMA sites, flyers, or QR codes can deep-link to map tab
+  const params=new URLSearchParams(window.location.search);
+  const tabParam=params.get('tab');
+  if(tabParam==='reg'){
+    document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    document.getElementById('pane-reg').classList.add('on');
+    document.getElementById('tab-reg').classList.add('on');
+  }
+  // Map tab is default — always init map
+  setTimeout(function(){initMap();setTimeout(function(){if(map)map.invalidateSize();},400);},150);
+});
+
 function doReg(){
   const name=document.getElementById('fn').value.trim()||'neighbor';
   const zip=document.getElementById('fz').value.trim()||'10009';
@@ -341,12 +405,11 @@ function doReg(){
   if(mob||floor==='basement'||floor==='ground'){
     const msgs=document.getElementById('chatmsgs');
     const d=document.createElement('div');d.className='m';
-    d.innerHTML='<div class="mn">Alert Bot</div><div class="mb bot">&#128680; You\'re flagged for priority evacuation support. When an order is issued, call <strong>311</strong> or text <strong>SHELTER to 898-211</strong> for assisted transport to your nearest center.</div>';
+    d.innerHTML='<div class="mn">Alert Bot</div><div class="mb bot">&#128680; You\'re flagged for priority evacuation. Call <strong>311</strong> or text <strong>SHELTER to 898-211</strong> for assisted transport.</div>';
     msgs.prepend(d);
   }
   document.getElementById('regwrap').style.display='none';
-  const s=document.getElementById('succwrap');
-  s.style.display='flex';
+  document.getElementById('succwrap').style.display='flex';
 }
 
 function send(){
